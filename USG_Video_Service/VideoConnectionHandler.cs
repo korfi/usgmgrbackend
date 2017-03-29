@@ -15,9 +15,8 @@ namespace USG_Video_Service
     {
 
         private Socket newsock = null;
-        private Thread delegatedThread;
-        private Boolean stopThread = false;
-        private Socket client;
+        //private Boolean stopThread = false;
+        private Socket client = null;
         private int port;
 
         public VideoConnectionHandler(int p)
@@ -60,7 +59,7 @@ namespace USG_Video_Service
                             newclient.Address, newclient.Port);
             int sent;
 
-            while (stopThread == false && SocketConnected(client) == true)
+            while (SocketConnected(client) == true)
             {
                 Bitmap bmp = TakeScreenshot();
                 //Bitmap bmp = source.Clone(new System.Drawing.Rectangle(x, y, width, height), source.PixelFormat);
@@ -73,22 +72,17 @@ namespace USG_Video_Service
                 bmp.Dispose();
                 ms.Close();
 
-                sent = SendVarData(client, bmpBytes);
+                if (SocketConnected(client)) sent = SendVarData(client, bmpBytes);
 
                 if (data.Length == 0)
-                    newsock.Listen(10);
+                    newsock.Listen(10);             
             }
-            //Console.WriteLine("Disconnected from {0}", newclient.Address);
-            if (stopThread == true)
-            {
-                newsock.Shutdown(SocketShutdown.Both);
-                newsock.Disconnect(true);
-            }
+            Console.WriteLine("Disconnected from {0}", newclient.Address);
+            //newsock.Shutdown(SocketShutdown.Both);
+            //newsock.Disconnect(true);
             client.Shutdown(SocketShutdown.Both);
             client.Disconnect(true);
             //}
-
-            /////////////////////////////////////////////
 
         }
 

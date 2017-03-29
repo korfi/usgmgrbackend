@@ -197,15 +197,23 @@ namespace USG_backend_console
 
         private void paletteChange(String name)
         {
-            System.Windows.Automation.Condition textConditionOne = new PropertyCondition(AutomationElement.AutomationIdProperty, "Palettecombo");
-            AutomationElement textOne = testWindow.FindFirst(TreeScope.Descendants, textConditionOne);
-            ExpandCollapsePattern valuetextOne = textOne.GetCurrentPattern(ExpandCollapsePattern.Pattern) as ExpandCollapsePattern;
-            valuetextOne.Expand();
-            AutomationElement listItem = textOne.FindFirst(TreeScope.Subtree, new PropertyCondition(AutomationElement.NameProperty, name));
-            AutomationPattern automationPatternFromElement = GetSpecifiedPattern(listItem, "SelectionItemPatternIdentifiers.Pattern");
-            SelectionItemPattern selectionItemPattern = listItem.GetCurrentPattern(automationPatternFromElement) as SelectionItemPattern;
-            selectionItemPattern.Select();
-            valuetextOne.Collapse();
+            try
+            {
+                System.Windows.Automation.Condition textConditionOne = new PropertyCondition(AutomationElement.AutomationIdProperty, "Palettecombo");
+                AutomationElement textOne = testWindow.FindFirst(TreeScope.Descendants, textConditionOne);
+                ExpandCollapsePattern valuetextOne = textOne.GetCurrentPattern(ExpandCollapsePattern.Pattern) as ExpandCollapsePattern;
+                valuetextOne.Expand();
+                AutomationElement listItem = textOne.FindFirst(TreeScope.Subtree, new PropertyCondition(AutomationElement.NameProperty, name));
+                AutomationPattern automationPatternFromElement = GetSpecifiedPattern(listItem, "SelectionItemPatternIdentifiers.Pattern");
+                SelectionItemPattern selectionItemPattern = listItem.GetCurrentPattern(automationPatternFromElement) as SelectionItemPattern;
+                selectionItemPattern.Select();
+                valuetextOne.Collapse();
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine("Couldn't change palette to " + name);
+            }
+            
         }
 
         private void signalChange(String name)
