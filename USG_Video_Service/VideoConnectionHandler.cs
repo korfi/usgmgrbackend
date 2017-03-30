@@ -80,8 +80,11 @@ namespace USG_Video_Service
             Console.WriteLine("Disconnected from {0}", newclient.Address);
             //newsock.Shutdown(SocketShutdown.Both);
             //newsock.Disconnect(true);
-            client.Shutdown(SocketShutdown.Both);
-            client.Disconnect(true);
+            if (SocketConnected(client) == true)
+            {
+                client.Shutdown(SocketShutdown.Both);
+                client.Disconnect(true);
+            }
             //}
 
         }

@@ -24,23 +24,23 @@ namespace USG_backend_console
         {
             switch (command.ToLower())
             {
-                case "freeze":          
+                case "frze":          
                     Console.WriteLine("Pressing freeze button");
                     freezeBtnPress();
                     break;
-                case "gainup":
+                case "gaup":
                     Console.WriteLine("Pressing gain up button");
                     gainUpBtnPress();
                     break;
-                case "gaindown":
+                case "gadn":
                     Console.WriteLine("Pressing gain down button");
                     gainDownBtnPress();
                     break;
-                case "areaup":
+                case "arup":
                     Console.WriteLine("Pressing area up button");
                     areaUpBtnPress();
                     break;
-                case "areadown":
+                case "ardn":
                     Console.WriteLine("Pressing area down button");
                     areaDownBtnPress();
                     break;
@@ -52,39 +52,39 @@ namespace USG_backend_console
                     Console.WriteLine("Pressing save button");
                     saveBtnPress();
                     break;
-                case "8bitgreyscale":
+                case "8bgr":
                     Console.WriteLine("Changing palette to 8-bit greyscale");
                     paletteChange("8-bit linear grayscale");
                     break;
-                case "getgain":
+                case "ggai":
                     Console.WriteLine(remoteIP);
                     conn = new TCPconnection(remoteIP.Split(':')[0],12000);
                     conn.send(getGain());
                     conn.disconnect();
                     Console.WriteLine("Sent gain value to " + remoteIP);
                     break;
-                case "gettxfrequency":
+                case "gtxf":
                     Console.WriteLine(remoteIP);
                     conn = new TCPconnection(remoteIP.Split(':')[0],12000);
                     conn.send(getTXfrequency());
                     conn.disconnect();
-                    Console.WriteLine("Sent gain value to " + remoteIP);
+                    Console.WriteLine("Sent tx frequency to " + remoteIP);
                     break;
-                case "gettxtype":
+                case "gtxt":
                     Console.WriteLine(remoteIP);
                     conn = new TCPconnection(remoteIP.Split(':')[0], 12000);
                     conn.send(getTXtype());
                     conn.disconnect();
-                    Console.WriteLine("Sent gain value to " + remoteIP);
+                    Console.WriteLine("Sent tx type to " + remoteIP);
                     break;
-                case "getimagingrange":
+                case "gimr":
                     Console.WriteLine(remoteIP);
                     conn = new TCPconnection(remoteIP.Split(':')[0], 12000);
                     conn.send(getImagingRange());
                     conn.disconnect();
                     Console.WriteLine("Sent gain value to " + remoteIP);
                     break;
-                case "getframerate":
+                case "gfps":
                     Console.WriteLine(remoteIP);
                     conn = new TCPconnection(remoteIP.Split(':')[0], 12000);
                     conn.send(getFramerate());

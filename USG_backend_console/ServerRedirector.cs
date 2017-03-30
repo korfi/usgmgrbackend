@@ -15,7 +15,6 @@ namespace USG_backend_console
 
         private int port;
         Byte[] bytes = new Byte[256];
-        String data = null;
         AutomationHandler ah = new AutomationHandler();
 
         public ServerRedirector(int p)
@@ -38,28 +37,35 @@ namespace USG_backend_console
                 clientSocket = serverSocket.AcceptTcpClient();
                 Console.WriteLine("Connected!\r\n");
 
-                data = null;
                 int i;
 
+                int commandCharSize = 4;
                 NetworkStream stream = clientSocket.GetStream();
                     while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                     {
                         try {
                             // Translate data bytes to a ASCII string.
-                            data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                            Console.WriteLine(String.Format("Received: {0}", data));
+                            string dataLeft = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+                            Console.WriteLine(String.Format("Received: {0}", dataLeft));
 
-                            ah.HandleStringCommand(data, clientSocket.Client.RemoteEndPoint.ToString());
+                            int currDataPos = 0;
+                            while (dataLeft.Length >= commandCharSize)
+                            {
+                                string currData = dataLeft.Substring(currDataPos, commandCharSize);
+                                currDataPos += commandCharSize;
+                                dataLeft = currData.Substring(currDataPos, dataLeft.Length-currDataPos);
 
+                                ah.HandleStringCommand(currData, clientSocket.Client.RemoteEndPoint.ToString());
 
-                            // Process the data sent by the client.
-                            data = data.ToUpper();
+                                // Process the data sent by the client.
+                                currData = currData.ToUpper();
 
-                            byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
+                                byte[] msg = System.Text.Encoding.ASCII.GetBytes(currData);
 
-                            // Send back a response.
-                            stream.Write(msg, 0, msg.Length);
-                            Console.WriteLine(String.Format("Sent: {0}", data));
+                                // Send back a response.
+                                stream.Write(msg, 0, msg.Length);
+                                Console.WriteLine(String.Format("Sent: {0}", currData));
+                            }
                         }
                         catch (Exception ex) { Console.WriteLine("Couldn't process sending/receiving data: " + ex.Message); };
                     }              
