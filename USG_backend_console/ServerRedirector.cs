@@ -41,34 +41,35 @@ namespace USG_backend_console
 
                 int commandCharSize = 4;
                 NetworkStream stream = clientSocket.GetStream();
-                    while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
-                    {
-                        try {
-                            // Translate data bytes to a ASCII string.
-                            string dataLeft = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                            Console.WriteLine(String.Format("Received: {0}", dataLeft));
+                while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                {
+                    try {
+                        Console.WriteLine("Bytes read");
+                        // Translate data bytes to a ASCII string.
+                        string dataLeft = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+                        Console.WriteLine(String.Format("Received: {0}", dataLeft));
 
-                            int currDataPos = 0;
-                            while (dataLeft.Length >= commandCharSize)
-                            {
-                                string currData = dataLeft.Substring(currDataPos, commandCharSize);
-                                currDataPos += commandCharSize;
-                                dataLeft = currData.Substring(currDataPos, dataLeft.Length-currDataPos);
+                        int currDataPos = 0;
+                        while (dataLeft.Length >= commandCharSize)
+                        {
+                            string currData = dataLeft.Substring(currDataPos, commandCharSize);
+                            currDataPos += commandCharSize;
+                            dataLeft = currData.Substring(currDataPos, dataLeft.Length-currDataPos);
 
-                                ah.HandleStringCommand(currData, clientSocket.Client.RemoteEndPoint.ToString());
+                            ah.HandleStringCommand(currData, clientSocket.Client.RemoteEndPoint.ToString());
 
-                                // Process the data sent by the client.
-                                currData = currData.ToUpper();
+                            // Process the data sent by the client.
+                            currData = currData.ToUpper();
 
-                                byte[] msg = System.Text.Encoding.ASCII.GetBytes(currData);
+                            byte[] msg = System.Text.Encoding.ASCII.GetBytes(currData);
 
-                                // Send back a response.
-                                stream.Write(msg, 0, msg.Length);
-                                Console.WriteLine(String.Format("Sent: {0}", currData));
-                            }
+                            // Send back a response.
+                            stream.Write(msg, 0, msg.Length);
+                            Console.WriteLine(String.Format("Sent: {0}", currData));
                         }
-                        catch (Exception ex) { Console.WriteLine("Couldn't process sending/receiving data: " + ex.Message); };
-                    }              
+                    }
+                    catch (Exception ex) { Console.WriteLine("Couldn't process sending/receiving data: " + ex.Message); };
+                }              
 
                 clientSocket.Close();
 

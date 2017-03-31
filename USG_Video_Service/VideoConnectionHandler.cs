@@ -74,6 +74,8 @@ namespace USG_Video_Service
 
                 if (SocketConnected(client)) sent = SendVarData(client, bmpBytes);
 
+                Thread.Sleep(50);
+
                 if (data.Length == 0)
                     newsock.Listen(10);             
             }
