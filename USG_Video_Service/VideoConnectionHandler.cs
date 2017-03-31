@@ -62,7 +62,7 @@ namespace USG_Video_Service
             while (SocketConnected(client) == true)
             {
                 Bitmap bmp = TakeScreenshot();
-                //Bitmap bmp = source.Clone(new System.Drawing.Rectangle(x, y, width, height), source.PixelFormat);
+                //Bitmap bmp = scrn.Clone(new System.Drawing.Rectangle(100, 100, 400, 400), scrn.PixelFormat);
                 MemoryStream ms = new MemoryStream();
                 // Save to memory using the Jpeg format
                 bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
@@ -73,8 +73,6 @@ namespace USG_Video_Service
                 ms.Close();
 
                 if (SocketConnected(client)) sent = SendVarData(client, bmpBytes);
-
-                Thread.Sleep(50);
 
                 if (data.Length == 0)
                     newsock.Listen(10);             
@@ -117,15 +115,15 @@ namespace USG_Video_Service
             System.Drawing.Rectangle totalSize = System.Drawing.Rectangle.Empty;
 
 
-            totalSize = System.Drawing.Rectangle.Union(totalSize, System.Windows.Forms.Screen.PrimaryScreen.Bounds);
+            //totalSize = System.Drawing.Rectangle.Union(totalSize, System.Windows.Forms.Screen.PrimaryScreen.Bounds);
+            totalSize = System.Drawing.Rectangle.Union(totalSize, new Rectangle(new Point(0,0),new Size(400,400))); // w size zmieniamy rozmiar zrzutu ekranu
 
             Bitmap screenShotBMP = new Bitmap(totalSize.Width, totalSize.Height, System.Drawing.Imaging.PixelFormat.
                 Format32bppArgb);
 
             Graphics screenShotGraphics = Graphics.FromImage(screenShotBMP);
 
-            screenShotGraphics.CopyFromScreen(totalSize.X, totalSize.Y, 0, 0, totalSize.Size,
-                CopyPixelOperation.SourceCopy);
+            screenShotGraphics.CopyFromScreen(totalSize.X, totalSize.Y, -200, -30, totalSize.Size, CopyPixelOperation.SourceCopy);  // w 3. i 4. parametrze zmieniamy lokalizacje zrzutu
 
             screenShotGraphics.Dispose();
 
