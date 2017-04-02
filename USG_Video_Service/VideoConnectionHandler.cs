@@ -16,7 +16,7 @@ namespace USG_Video_Service
 
         private Socket newsock = null;
         //private Boolean stopThread = false;
-        private Socket client = null;
+        private UdpClient server = null;
         private int port;
 
         public VideoConnectionHandler(int p)
@@ -37,29 +37,13 @@ namespace USG_Video_Service
             ////////////////////////////////////////////
 
             Console.WriteLine("Video server is starting...");
-            byte[] data = new byte[1024];
-            IPEndPoint ipep = new IPEndPoint(IPAddress.Any, port);
+            //byte[] data = new byte[1024];
+            Socket s = new Socket (AddressFamily.InterNetwork, SocketType.Dgram,ProtocolType.Udp);
+            IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("192.168.0.119"), port);
 
-            if (newsock == null)
-            {
-                newsock = new Socket(AddressFamily.InterNetwork,
-                                    SocketType.Stream, ProtocolType.Tcp);
-            }
+            Console.WriteLine("Sending video");
 
-            if (newsock.IsBound == false && newsock != null)
-            {
-                newsock.Bind(ipep);
-            }
-            newsock.Listen(10);
-            Console.WriteLine("Waiting for a video client...");
-
-            client = newsock.Accept();
-            IPEndPoint newclient = (IPEndPoint)client.RemoteEndPoint;
-            Console.WriteLine("Video connected with {0} at port {1}",
-                            newclient.Address, newclient.Port);
-            int sent;
-
-            while (SocketConnected(client) == true)
+            while (true)
             {
                 Bitmap bmp = TakeScreenshot();
                 //Bitmap bmp = scrn.Clone(new System.Drawing.Rectangle(100, 100, 400, 400), scrn.PixelFormat);
@@ -72,19 +56,14 @@ namespace USG_Video_Service
                 bmp.Dispose();
                 ms.Close();
 
-                if (SocketConnected(client)) sent = SendVarData(client, bmpBytes);
-
-                if (data.Length == 0)
-                    newsock.Listen(10);             
+                Console.WriteLine(bmpBytes.Length);
+                s.SendTo(bmpBytes, ipep);
+         
             }
-            Console.WriteLine("Disconnected from {0}", newclient.Address);
+            Console.WriteLine("Stopped sending");
             //newsock.Shutdown(SocketShutdown.Both);
             //newsock.Disconnect(true);
-            if (SocketConnected(client) == true)
-            {
-                client.Shutdown(SocketShutdown.Both);
-                client.Disconnect(true);
-            }
+            server.Close();
             //}
 
         }
